@@ -1,13 +1,14 @@
-package com.quincysx.crypto;
+package com.quincysx.crypto.smpale;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
+
+import com.quincysx.crypto.CoinTypes;
+import com.quincysx.crypto.ECKeyPair;
 import com.quincysx.crypto.bip32.ExtendedKey;
 import com.quincysx.crypto.bip32.ValidationException;
-import com.quincysx.crypto.bip38.Bip38;
 import com.quincysx.crypto.bip39.MnemonicCode;
 import com.quincysx.crypto.bip39.MnemonicException;
 import com.quincysx.crypto.bip39.RandomSeed;
@@ -15,7 +16,9 @@ import com.quincysx.crypto.bip39.Words;
 import com.quincysx.crypto.bip44.AddressIndex;
 import com.quincysx.crypto.bip44.BIP44;
 import com.quincysx.crypto.bip44.CoinPairDerive;
+import com.quincysx.crypto.bitcoin.BTCTransaction;
 import com.quincysx.crypto.bitcoin.BitCoinECKeyPair;
+import com.quincysx.crypto.bitcoin.BitcoinException;
 import com.quincysx.crypto.exception.CoinNotFindException;
 import com.quincysx.crypto.exception.NonSupportException;
 import com.quincysx.crypto.utils.HexUtils;
@@ -107,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
         mnemonicWordsInAList.add("amazing");
         mnemonicWordsInAList.add("athlete");
         mnemonicWordsInAList.add("diet");
+
+        Log.e("=====", "===" + mnemonicWordsInAList.toString());
         try {
             Account account = new Account("123456");
             Log.e("1111111", account.getAddress());
@@ -145,27 +150,41 @@ public class MainActivity extends AppCompatActivity {
 //            CoinKeyPair bitcoinKeyPair = coinKeyPair.convertEthKeyPair(new BigInteger(1, master
 // .getMaster().getPrivate()));
 
-//            Log.e("=1221=", "==========开始============");
-//
-//            ExtendedKey extendedKey = ExtendedKey.create(seed);
-//            AddressIndex address = BIP44.m().purpose44()
-//                    .coinType(CoinTypes.Ethereum)
-//                    .account(0)
-//                    .external()
-//                    .address(0);
-//            CoinPairDerive coinKeyPair = new CoinPairDerive(extendedKey);
-//            ECKeyPair master = coinKeyPair.derive(address);
-//
-//            org.web3j.crypto.ECKeyPair keypair = org.web3j.crypto.ECKeyPair.create(master.getRawPrivateKey());
-//
-//            WalletFile walletFile = createStandard("111111", keypair);
-//
-//            Log.e("=1221=", "==" + address.toString());
-//            Log.e("=1221private", master.getPrivateKey());
-//            Log.e("=1221public=", master.getPublicKey());
-//            Log.e("=1221address=", master.getAddress());
-//            Log.e("=1221=", "======================");
-//
+            Log.e("=1221=", "==========开始============");
+
+            ExtendedKey extendedKey = ExtendedKey.create(seed);
+            AddressIndex address = BIP44.m().purpose44()
+                    .coinType(CoinTypes.BitcoinTest)
+                    .account(0)
+                    .external()
+                    .address(0);
+            CoinPairDerive coinKeyPair = new CoinPairDerive(extendedKey);
+            ECKeyPair master = coinKeyPair.derive(address);
+
+            try {
+                BTCTransaction btcTransaction = new BTCTransaction(HexUtils.fromHex
+                        ("02000000018aad5febb0f5165097727eb402d15e96c615560b6d4e0fcbee0882ff589af3220000000000ffffffff0240420f00000000001976a91438ae48c4ff53e9ba952d3c63f200f2dfe04f330188aca0cd8700000000001976a91481f9f80df4efb08e373fa8f2b8896f33e3a270f388ac00000000"));
+                byte[] sign = btcTransaction.sign(master);
+                Log.e("===", HexUtils.toHex(sign));
+            } catch (BitcoinException e) {
+                e.printStackTrace();
+            }
+
+            Log.e("=1221=", "==" + address.toString());
+            Log.e("=1221private", master.getPrivateKey());
+            Log.e("=1221public=", master.getPublicKey());
+            Log.e("=1221address=", master.getAddress());
+            Log.e("=1221=", "======================");
+
+            Log.e("=====", "================================================sdasdasdasd");
+            BitCoinECKeyPair bitCoinECKeyPair = BitCoinECKeyPair.parseWIF(master.getPrivateKey());
+            Log.e("=====", "================================================sdasdasdasd");
+
+            Log.e("=1221private", bitCoinECKeyPair.getPrivateKey());
+            Log.e("=1221public=", bitCoinECKeyPair.getPublicKey());
+            Log.e("=1221address=", bitCoinECKeyPair.getAddress());
+            Log.e("=1221=", "======================");
+
 //            if (master instanceof BitCoinECKeyPair) {
 //                try {
 //                    String s = Bip38.encryptNoEcMultiply("123456", master
@@ -178,12 +197,12 @@ public class MainActivity extends AppCompatActivity {
 //                    e.printStackTrace();
 //                }
 //            }
-//
-//            //普通上链签名=========
-//            BigInteger nonce = new BigInteger("12");
-//            BigInteger gasLimit = new BigInteger("1500000");
-////            BigInteger gasLimit = new BigInteger("21000");
-//            BigInteger gasPrice = new BigInteger("5000000000");
+
+            //普通上链签名=========
+            BigInteger nonce = new BigInteger("12");
+            BigInteger gasLimit = new BigInteger("1500000");
+//            BigInteger gasLimit = new BigInteger("21000");
+            BigInteger gasPrice = new BigInteger("5000000000");
 //            BigInteger gasPrice = new BigInteger("0");
 //
 //            EthTransaction ethTransaction = EthTransaction
