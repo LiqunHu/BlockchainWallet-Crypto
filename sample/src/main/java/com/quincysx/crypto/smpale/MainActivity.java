@@ -131,13 +131,13 @@ public class MainActivity extends AppCompatActivity {
             Log.e("777777", account3.getPrivateKey());
             Log.e("888888", account3.getKeyStore());
             Log.e("999999", account3.createSignTransaction(new BigInteger("10000"), new BigInteger("2000000"), new BigInteger("30000000"), "00d8012bb1579ef4f3c99bde6a28caabe68b3004", new BigInteger("1000000000"), ""));
-//
-//            byte[] random = RandomSeed.random(Words.TWELVE);
-//            MnemonicCode mnemonicCode = new MnemonicCode();
-//            List<String> strings = mnemonicCode.toMnemonic(random);
+
+            byte[] random = RandomSeed.random(Words.TWELVE);
+            MnemonicCode mnemonicCode = new MnemonicCode();
+            List<String> strings = mnemonicCode.toMnemonic(random);
 //            byte[] bytes = mnemonicCode.toEntropy(strings);
-//
-//            byte[] seed = MnemonicCode.toSeed(mnemonicWordsInAList, "");
+
+            byte[] seed = MnemonicCode.toSeed(mnemonicWordsInAList, "");
 
 //            ExtendedKey extendedKey = ExtendedKey.create(seed);
 //            AddressIndex address = BIP44.m().purpose44()
